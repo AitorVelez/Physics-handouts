@@ -3,6 +3,7 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
+#include "ModuleSceneIntro.h"
 #include "math.h"
 
 #include "Box2D/Box2D/Box2D.h"
@@ -65,30 +66,17 @@ update_status ModulePhysics::PostUpdate()
 	// On space bar press, create a circle on mouse position
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-
+		
 		createCricle();
-	/*	b2BodyDef body;
-		body.type = b2_dynamicBody;
-		float radius = PIXEL_TO_METERS(25);
-		body.position.Set(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()));
-
-		b2Body* b = world->CreateBody(&body);
-
-		b2CircleShape shape;
-		shape.m_radius = radius;
-		b2FixtureDef fixture;
-		fixture.shape = &shape;
-
-		b->CreateFixture(&fixture);*/
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{
-
 		createRectangle();
 		// TODO 1: When pressing 2, create a box on the mouse position
 		// To have the box behave normally, set fixture's density to 1.0f
-		/*b2BodyDef body;
+
+		b2BodyDef body;
 		body.type = b2_dynamicBody;
 		float radius = PIXEL_TO_METERS(25);
 		body.position.Set(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()));
@@ -100,7 +88,7 @@ update_status ModulePhysics::PostUpdate()
 
 
 
-		b->CreateFixture(&box,0.0f);*/
+		b->CreateFixture(&box, 0.0f);
 
 	}
 
@@ -109,31 +97,54 @@ update_status ModulePhysics::PostUpdate()
 		// TODO 2: Create a chain shape using those vertices
 		// remember to convert them from pixels to meters!
 		
-		int points[24] = {
-			-38, 80,
-			-44, -54,
-			-16, -60,
-			-16, -17,
-			19, -19,
-			19, -79,
-			61, -77,
-			57, 73,
-			17, 78,
-			20, 16,
-			-25, 13,
-			-9, 72
+		int points[70] = {
+			44, 37,
+			40, 0,
+			59, 13,
+			73, 33,
+			82, 18,
+			87, 4,
+			93, 19,
+			94, 39,
+			111, 34,
+			103, 57,
+			105, 63,
+			117, 67,
+			109, 74,
+			109, 82,
+			105, 92,
+			110, 101,
+			103, 105,
+			101, 116,
+			105, 126,
+			100, 126,
+			93, 141,
+			84, 147,
+			73, 148,
+			65, 148,
+			58, 144,
+			46, 133,
+			34, 136,
+			40, 126,
+			23, 124,
+			30, 114,
+			10, 102,
+			28, 92,
+			0, 76,
+			29, 62,
+			13, 34
 		};
 
-		/*b2Vec2 arra[12];
+		b2Vec2 arra[70/2];
 
 		int j = 0;
-		for (int i = 0; i < 24; i += 2) {
+		for (int i = 0; i < 70; i += 2) {
 
-			
+
 			arra[j].Set(PIXEL_TO_METERS(points[i]), PIXEL_TO_METERS(points[i + 1]));
 			j += 1;
 		}
-		
+
 
 		b2BodyDef chainBody;
 		chainBody.type = b2_dynamicBody;
@@ -143,11 +154,9 @@ update_status ModulePhysics::PostUpdate()
 
 		b2Body* b = world->CreateBody(&chainBody);
 		b2ChainShape chain;
-		chain.CreateLoop(arra,12);
-		b->CreateFixture(&chain, 0.0f);*/
-		
+		chain.CreateLoop(arra, 70/2);
+		b->CreateFixture(&chain, 0.0f);
 	}
-
 
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
@@ -242,11 +251,10 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
+ physBody* ModulePhysics::createCricle() {
 
-void ModulePhysics::createCricle() {
 
-	
-	
+
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
 	float radius = PIXEL_TO_METERS(25);
@@ -257,8 +265,11 @@ void ModulePhysics::createCricle() {
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	b->CreateFixture(&fixture);
-	
 
+	physBody *oneBody = new physBody;
+	oneBody->body = b;
+	App->scene_intro->formas.add(oneBody);
+	return oneBody;
 }
 
 void ModulePhysics::createRectangle() {
@@ -272,25 +283,22 @@ void ModulePhysics::createRectangle() {
 
 	b2PolygonShape box;
 	box.SetAsBox(1.0f, 1.0f);
-
-
-
 	b->CreateFixture(&box, 0.0f);
 
 
 }
 
-void ModulePhysics::createChain() {
+//void ModulePhysics::createChain(int *points,int size, int position) {
 
 
-/*	b2Vec2 arra[12];
+	/*b2Vec2 arra[12];
 
 	int j = 0;
 	for (int i = 0; i < 24; i += 2) {
 
 
-		arra[j].Set(PIXEL_TO_METERS(points[i]), PIXEL_TO_METERS(points[i + 1]));
-		j += 1;
+	arra[j].Set(PIXEL_TO_METERS(points[i]), PIXEL_TO_METERS(points[i + 1]));
+	j += 1;
 	}
 
 
@@ -303,8 +311,15 @@ void ModulePhysics::createChain() {
 	b2Body* b = world->CreateBody(&chainBody);
 	b2ChainShape chain;
 	chain.CreateLoop(arra, 12);
-	b->CreateFixture(&chain, 0.0f)*/
+	b->CreateFixture(&chain, 0.0f);
 
+}*/
+
+b2Vec2 physBody::getPosition() {
+
+	b2Vec2 pos = body->GetPosition();
+	pos.x = METERS_TO_PIXELS(body->GetPosition().x);
+	pos.y = METERS_TO_PIXELS(body->GetPosition().y);
+
+	return pos;
 }
-
-

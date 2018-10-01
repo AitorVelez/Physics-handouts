@@ -42,7 +42,16 @@ update_status ModuleSceneIntro::Update()
 {
 	// TODO 4: Move all creation of bodies on 1,2,3 key press here in the scene
 	
+	
 	// TODO 6: Draw all the circles using "circle" texture
+	
+	p2List_item<physBody*> *oneFormas = formas.getFirst();
 
+	while (oneFormas != nullptr) {
+
+		App->renderer->Blit(circle,oneFormas->data->getPosition().x, oneFormas->data->getPosition().y, NULL, 1.0);
+
+		oneFormas = oneFormas->next;
+	}
 	return UPDATE_CONTINUE;
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "Box2D/Box2D/Box2D.h"
 
 #define GRAVITY_X 0.0f
 #define GRAVITY_Y -7.0f
@@ -13,12 +14,20 @@
 
 class b2World;
 class b2Body;
+class b2Vec2;
 
 // TODO 5: Create a small class that keeps a pointer to the b2Body
 // and has a method to request the position
 // then write the implementation in the .cpp
 // Then make your circle creation function to return a pointer to that class
 
+class physBody {
+
+public:
+	b2Body * body;
+	b2Vec2 getPosition();
+	
+};
 
 class ModulePhysics : public Module
 {
@@ -33,12 +42,15 @@ public:
 
 	// TODO 3: Move body creation to 3 functions to create circles, rectangles and chains
 
-	void createCricle();
+	physBody *createCricle();
 	void createRectangle();
 	void createChain();
+
+
 
 private:
 
 	bool debug;
 	b2World* world;
 };
+

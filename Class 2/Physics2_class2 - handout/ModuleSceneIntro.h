@@ -3,7 +3,7 @@
 #include "p2List.h"
 #include "Globals.h"
 
-class PhysBody;
+class physBody;
 
 class ModuleSceneIntro : public Module
 {
@@ -14,6 +14,8 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
+	p2List<physBody*> formas;
+	
 
 public:
 
