@@ -31,6 +31,7 @@ bool ModulePhysics::Start()
 
 	world = new b2World(b2Vec2(GRAVITY_X, -GRAVITY_Y));
 	// TODO 3: You need to make ModulePhysics class a contact listener
+	world->SetContactListener(this);	//moudlo physics sera un contact listener
 
 	// big static circle as "ground" in the middle of the screen
 	int x = SCREEN_WIDTH / 2;
@@ -85,9 +86,13 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
 	b->CreateFixture(&fixture);
 
 	// TODO 4: Add a pointer to PhysBody as UserData to the body
+	
+
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
 	pbody->width = pbody->height = radius;
+
+	b->SetUserData(pbody);
 
 	return pbody;
 }
@@ -113,6 +118,7 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
 	pbody->width = width * 0.5f;
 	pbody->height = height * 0.5f;
 
+	b->SetUserData(pbody);
 	return pbody;
 }
 
@@ -145,6 +151,8 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
 	pbody->width = pbody->height = 0;
+
+	b->SetUserData(pbody);
 
 	return pbody;
 }
@@ -287,8 +295,10 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 		b2RayCastInput input;
 		input.p1.Set(x1, y1);
 		input.p1.Set(x2, y2);
-		input.maxFraction = 1.0f;		b2RayCastOutput output;
-		int32 childIndex = 0;		bool hit = f->RayCast(&output, input,0);
+		input.maxFraction = 1.0f;
+		b2RayCastOutput output;
+		int32 childIndex = 0;
+		bool hit = f->RayCast(&output, input,0);
 		if (hit)
 		{
 			output.normal.Set(normal_x, normal_y);
@@ -296,7 +306,8 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 			vec.Set((x2 - x1), (y2 - y1));
 			return vec.Length() * output.fraction;
 	
-		}
+		}
+
 	}
 
 	int ret = -1;
@@ -306,4 +317,23 @@ int PhysBody::RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& no
 
 // TODO 3
 
-// TODO 7: Call the listeners that are not NULL
+void ModulePhysics::BeginContact(b2Contact* contact)
+{
+	PhysBody* body1 = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+	PhysBody* body2 = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+
+	// TODO 7: Call the listeners that are not NULL
+
+	if (body1 && body1->listVar != nullptr) {
+
+		body1->listVar->Oncollision(body1, body2);
+	}
+
+	if (body2 && body2->listVar != nullptr) {
+
+		body2->listVar->Oncollision(body2, body1);
+	}
+}
+
+
+

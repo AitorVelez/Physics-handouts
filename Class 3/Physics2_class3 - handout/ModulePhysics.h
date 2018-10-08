@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 
+
 #define GRAVITY_X 0.0f
 #define GRAVITY_Y -7.0f
 
@@ -13,6 +14,7 @@
 
 class b2World;
 class b2Body;
+class b2ContactListener;
 
 // Small class to return to other modules to track position and rotation of physics bodies
 class PhysBody
@@ -30,12 +32,15 @@ public:
 	int width, height;
 	b2Body* body;
 	// TODO 6: Add a pointer to a module that might want to listen to a collision from this body
+	Module *listVar;
+
+
 };
 
 // Module --------------------------------------
 // TODO 3: Make module physics inherit from b2ContactListener
 // then override void BeginContact(b2Contact* contact)
-class ModulePhysics : public Module
+class ModulePhysics : public Module , public b2ContactListener			//hereda de 2 modulos
 {
 public:
 	ModulePhysics(Application* app, bool start_enabled = true);
@@ -51,6 +56,7 @@ public:
 	// TODO: Homework - create a sensor
 	// PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, int* points, int size);
+	void BeginContact(b2Contact *contact);
 
 private:
 
